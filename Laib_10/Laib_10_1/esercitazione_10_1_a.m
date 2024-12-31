@@ -80,5 +80,3 @@ end
 ylabel('Temperatura (K)')
 xlabel('Lunghezza (m)')
 title('Evoluzione della temperatura in funzione del tempo')
-
-
