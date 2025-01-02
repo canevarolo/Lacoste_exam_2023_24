@@ -7,4 +7,4 @@ The reason why there is a repository for each year is because requests, and so c
 The files are developed in MatLab language, charged in .m .
 For any mistakes or add-ins, just contact me.
 
-The language in the comment may be in italian, even though the text of the exercise will be translated fully in english.
+Files were originally written in italian, but some of them have been translated into english.
