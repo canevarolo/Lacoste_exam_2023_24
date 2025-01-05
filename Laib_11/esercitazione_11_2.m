@@ -11,8 +11,7 @@ clc
 
 ll = 0.2; % larghezza pezzo, m
 lbase = 0.1; % larghezza della base, m
-% lcentro = 0.2; % larghezza del pezzo nella zona centrale, m dato poco
-% utile
+% lcentro = 0.2; % larghezza del pezzo nella zona centrale, m dato poco utile
 altezza = 0.1; % altezza complessiva del pezzo, m
 altezzabase = 0.05; % altezza delle parti che sorreggono la base, m
 
