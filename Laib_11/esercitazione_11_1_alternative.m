@@ -1,7 +1,7 @@
 % Esercitazione 11, esercizio 1
 % Simone Canevarolo
 % S269893
-% 8 aprile 2024
+% 8/04/2024
 
 clear all
 close all
