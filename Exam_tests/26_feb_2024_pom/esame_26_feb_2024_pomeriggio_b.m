@@ -78,5 +78,5 @@ end
     plot(tt,Tcentro,'LineWidth',2)
     hold on
     plot(tt,Tsuperficie,'LineWidth',2)
-    legend('T al centro','T superficie')
+    legend('T al centro','T superficie', 'Location','Best')
     grid on
