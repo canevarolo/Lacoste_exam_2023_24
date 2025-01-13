@@ -70,7 +70,7 @@ for zz = 2:Nt
 
         TT = AA_1\BB;
 
-    if zz == ttvett(ii)
+    if ii <= length(ttvett) && zz == ttvett(ii)
 
         figure(1)
         plot(xx,TT,'LineWidth',2)
