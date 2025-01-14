@@ -1,3 +1,29 @@
+% Considerando sempre perfetto l’accoppiamento termico con l’azoto liquido, e il coefficiente di scambio 
+% termico con il vapore di azoto pari a 50 × (𝑇𝐻𝑂𝑇𝑆𝑃𝑂𝑇(𝑡) − 70) W/m2K, scrivere un report dettagliato 
+% sull’evoluzione del transitorio termico della sbarra fino al raggiungimento di un nuovo stato stazionario. 
+% In particolare, dopo aver correttamente formulato il problema matematico di riferimento e discusso gli 
+% schemi numerici utilizzati per la discretizzazione in spazio e tempo dell’equazione di riferimento e relative 
+% condizioni iniziali e al contorno, si studi per la sezione 2D mostrata in figura:
+
+% a. La temperatura massima 𝑇𝐻𝑂𝑇𝑆𝑃𝑂𝑇 all’interno della sbarra, producendo e commentando un grafico 
+% che mostri l’evoluzione di 𝑇𝐻𝑂𝑇𝑆𝑃𝑂𝑇 nel tempo.
+
+% b. La distribuzione di temperatura nella sbarra, producendo la mappa di temperatura nello stazionario 
+% finale e commentando se e come rispetti le condizioni al contorno del problema.
+
+% c. La distribuzione di temperatura lungo l’asse di simmetria verticale della sbarra, producendo e 
+% commentando un grafico che mostri contemporaneamente il profilo di temperatura ivi calcolato 
+% dopo 1s, 2 s, 5 s e 10 s dall’inizio del transitorio.
+
+% d. L’accuratezza con cui viene calcolato il valore di 𝑇𝐻𝑂𝑇𝑆𝑃𝑂𝑇 nel nuovo stazionario, al variare dei 
+% parametri di discretizzazione spaziale, discutendo se e come possa essere raggiunta una 
+% accuratezza di 0.1 K.
+
+% e. Il bilancio di potenza nello stazionario finale, verificando e commentando come la potenza 
+% istantanea che la sbarra trasferisce all’azoto liquido e al suo vapore eguagli la potenza generata per 
+% effetto Joule all’interno della sbarra.
+
+
 % Esame 18/09/2024
 % Simone Canevarolo
 % s269893
@@ -75,13 +101,14 @@ for zz = 2:Nt
 
     hh = hhfunz(Thotspot);
 
+    BB = Tm+bb;
     
     % Sud Ovest - Dirichlet
     % jj = 1 
     kk = Nvap:Nx;
     AA(kk,:) = 0;
     AA(kk,kk) = eye(length(kk));
-    bb(kk) = Tvap;
+    BB(kk) = Tvap;
     
     
     % Sud - Dirichlet
@@ -89,14 +116,14 @@ for zz = 2:Nt
     kk = Nx:Nx:Ntot;
     AA(kk,:) = 0;
     AA(kk,kk) = eye(length(kk));
-    bb(kk) = Tvap;
+    BB(kk) = Tvap;
     
     % Sud Est - Dirichlet
     % jj = Ny;
     kk = (Ny-1)*Nx+Nvap:Ntot;
     AA(kk,:) = 0;
     AA(kk,kk) = eye(length(kk));
-    bb(kk) = Tvap;
+    BB(kk) = Tvap;
 
     % Nord Ovest - robin
     jj = 1;
@@ -107,7 +134,7 @@ for zz = 2:Nt
         AA(kk,kk) = -1/dx^2-1/dy^2-hh/dy/cond;
         AA(kk,kk+1) = 1/2/dx^2;
         AA(kk,kk+Nx) = 1/dy^2;
-        bb(kk) = -Tvap*hh/dy/cond;
+        BB(kk) = -Tvap*hh/dy/cond;
     
     end
     
@@ -120,7 +147,7 @@ for zz = 2:Nt
         AA(kk,kk-1) = 1/2/dx^2;
         AA(kk,kk) = -1/dx^2-1/dy^2-hh/dy/cond;
         AA(kk,kk+1) = 1/2/dx^2;
-        bb(kk) = -Tvap*hh/dy/cond;
+        BB(kk) = -Tvap*hh/dy/cond;
 
     end
     
@@ -133,7 +160,7 @@ for zz = 2:Nt
         AA(kk,kk) = -1/dx^2-1/dy^2-hh/dx/cond;
         AA(kk,kk+1) = 1/dx^2;
         AA(kk,kk+Nx) = 1/2/dy^2;
-        bb(kk) = -Tvap*hh/dx/cond;
+        BB(kk) = -Tvap*hh/dx/cond;
 
     end
     
@@ -142,7 +169,7 @@ for zz = 2:Nt
     AA(kk,kk) = -1/2/dx^2-1/2/dy^2-hh/dx/cond/2-hh/dy/cond/2;
     AA(kk,kk+1) = 1/2/dx^2;
     AA(kk,kk+Nx) = 1/2/dy^2;
-    bb(kk) = -Tvap*hh/cond/dx/2-Tvap*hh/cond/dy/2;
+    BB(kk) = -Tvap*hh/cond/dx/2-Tvap*hh/cond/dy/2;
 
     
     % Vertice Nord Est
@@ -150,9 +177,8 @@ for zz = 2:Nt
     AA(kk,kk-Nx) = 1/2/dy^2;
     AA(kk,kk) = -1/2/dx^2-1/2/dy^2-hh/dx/2/cond-hh/dy/2/cond;
     AA(kk,kk+1) = 1/2/dx^2;
-    bb(kk) = -Tvap*hh/cond/dx/2-Tvap*hh/cond/dy/2;
+    BB(kk) = -Tvap*hh/cond/dx/2-Tvap*hh/cond/dy/2;
     
-    BB = Tm+bb; 
     
     TT = AA\BB;
 
