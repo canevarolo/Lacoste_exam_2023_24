@@ -1,47 +1,46 @@
 % Esame del 2 febbraio 2024 punto b - turno mattino 
 % Simone Canevarolo
 % S269893
-% 18 aprile 2024
 
 clear all
 close all
 clc
 
 raggio = 20e-2; % m
-altezza = 7.5e3; % m
-uu = 5; % m/s
-T0 = 233; % K
+alt = 7500; % m
+vv = 5; % m/s
+T0 = -40+273; % K
 hh = 100; % W/m^2/K
-Taria = 270; % K
-ro = 1e3; % kg/m^3
+Tair = 270; % K
 
-kk = @(T) 5*(T/T0);
-cp = @(T) 670+1.2*(T-233);
+rovol = 1e3; % kg/m^3
 
-dr = 1e-3;
-rr = (0:dr:raggio)';
+kk = @(T) 5.*(T./T0); % W/m/K
+
+cp = @(T) 670 + 1.2*(T-233); % J/kg/K
+
+
+dr = 1e-3; % m
+rr = (0:dr:raggio/2)';
 Nr = length(rr);
 
 dt = 1; % s
-tempomax = altezza/uu; % s
-tt = (0:dt:tempomax);
+tmax = alt/vv; % s
+tt = (0:dt:tmax);
 Nt = length(tt);
 
 Tm = T0*ones(Nr,1);
 Tcentro = T0*ones(Nt,1);
-Tsuperficie = T0*ones(Nt,1);
+Tsup = T0*ones(Nt,1);
 
-for ii = 1:Nt
 
-    aa = kk(Tm).*dt./dr^2./ro./cp(Tm);
-     
-%     sub_diag = -aa.*(1/dr^2-1./dr./rr);
-%     main_diag = (1+2*aa);
-%     sup_diag = -aa.*(1/dr^2+1./dr./rr); 
+for ii = 2:Nt
+
+    aa = kk(Tm)*dt/dr^2/rovol./cp(Tm);
     
-    sub_diag = -aa;
-    main_diag = (1+2*aa);
-    sup_diag = -aa;
+    sub_diag = -aa.*(1-dr./rr);
+    main_diag = 1+2.*aa;
+    sup_diag = -aa.*(1+dr./rr);
     
     Band = [[sub_diag(2:end);0], main_diag, [0;sup_diag(1:end-1)]];
     
@@ -53,26 +52,28 @@ for ii = 1:Nt
     AA(1,2) = 1;
     bb(1) = 0;
 
-    AA(end,end-1) = kk(Tm(end))/dr;
-    AA(end,end) = -kk(Tm(end))/dr-hh;
-    bb(end) = -Taria*hh;
-
+    AA(end,end-1) = -kk(Tm(end))/dr;
+    AA(end,end) = hh+kk(Tm(end))/dr;
+    bb(end) = hh*Tair;
+    
     TT = AA\bb;
 
     Tcentro(ii) = TT(1);
-    Tsuperficie(ii) = TT(end);
+    Tsup(ii) = TT(end);
 
-Tm = TT;
+    Tm = TT;
 
 end
 
-    figure(1)
-    plot(tt,Tcentro,'LineWidth',2)
-    title('Temperatura al centro della sfera')
-    xlabel('tempo [s]')
-    ylabel('Temperatura [K]')
-    hold on
-    plot(tt,Tsuperficie,'LineWidth',2)
-    title('Temperatura alla superficie')
-    xlabel('tempo [s]')
-    ylabel('Temperatura [K]')
+
+figure(1)
+plot(tt,Tcentro,'LineWidth',2)
+title('Temperature at the center')
+xlabel('time [s]')
+ylabel('Temperature [K]')
+hold on
+plot(tt,Tsup,'LineWidth',2)
+title('Temperature on surface')
+xlabel('time [s]')
+ylabel('Temperature [K]')
+legend('T centro','T superficie','Location','best')
