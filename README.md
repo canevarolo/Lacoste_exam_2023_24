@@ -8,4 +8,4 @@ The files are developed in MatLab language, charged in .m .
 
 For any mistakes or add-ins, just open a pull request or contact me.
 
-Files were originally written in italian, but some of them have been translated into english.
+Texts - and some parts - will be both in english and italian.
